@@ -6,6 +6,10 @@ from openai import OpenAI
 import uuid
 import re
 import json
+from dotenv import load_dotenv
+
+# 加载环境变量
+load_dotenv()
 
 # 页面配置
 st.set_page_config(page_title="校园闲置物品智能交易助手", page_icon="📦", layout="wide")
@@ -192,8 +196,9 @@ df = load_data()
 
 # ==================== AI客户端 ====================
 def get_ai_client():
-    api_key = st.session_state.get("api_key", "")
-    base_url = st.session_state.get("base_url", "https://api.deepseek.com/v1")
+    # 从环境变量读取API配置
+    api_key = os.getenv("API_KEY")
+    base_url = os.getenv("BASE_URL", "https://api.deepseek.com/v1")
     if api_key:
         return OpenAI(api_key=api_key, base_url=base_url)
     return None
@@ -287,7 +292,7 @@ with col2:
 if st.session_state.show_settings:
     with st.expander("⚙️ 系统设置", expanded=True):
         st.subheader("🔐 管理员登录")
-        admin_pwd = st.text_input("管理员密码", type="password", help="输入密码以访问数据分析和API配置")
+        admin_pwd = st.text_input("管理员密码", type="password", help="输入密码以访问数据分析")
         if st.button("登录"):
             if admin_pwd == ADMIN_PASSWORD:
                 st.session_state.is_admin = True
@@ -296,11 +301,6 @@ if st.session_state.show_settings:
                 st.error("密码错误")
         if st.session_state.is_admin:
             st.info("当前为管理员模式")
-            st.markdown("---")
-            st.subheader("🤖 API配置")
-            st.session_state.api_key = st.text_input("API Key", value=st.session_state.get("api_key", ""), type="password")
-            st.session_state.base_url = st.text_input("Base URL", value=st.session_state.get("base_url", "https://api.deepseek.com/v1"))
-            st.session_state.model = st.text_input("Model", value=st.session_state.get("model", "deepseek-chat"))
 
 # ==================== 侧边栏（价格优化 + AI智能筛选 + 表情品类） ====================
 with st.sidebar:
