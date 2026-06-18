@@ -17,71 +17,106 @@ st.set_page_config(page_title="校园闲置物品智能交易助手", page_icon=
 # 自定义CSS样式
 st.markdown("""
 <style>
-    /* 整体背景色 */
+    /* 整体背景色 - 柔和渐变 */
     .stApp {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: linear-gradient(135deg, #e0f2fe 0%, #fce7f3 50%, #fef3c7 100%);
         min-height: 100vh;
     }
     
-    /* 标题样式 */
-    .stTitle {
-        color: #2c3e50;
+    /* 标题样式 - 统一主色调 */
+    .stTitle, h1, h2, h3, h4, h5, h6 {
+        color: #0284c7;
         font-weight: 700;
+        line-height: 1.4;
+    }
+    
+    /* 普通文字样式 - 深色确保可读性 */
+    .stApp p, .stApp span, .stApp label {
+        color: #1e3a5f;
+        font-size: 14px;
+        line-height: 1.6;
     }
     
     /* 标签页样式 */
     .stTabs [data-baseweb="tab-list"] {
-        background-color: rgba(255, 255, 255, 0.8);
-        border-radius: 10px 10px 0 0;
-        padding: 0.5rem;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 16px 16px 0 0;
+        padding: 0.75rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
     }
     
     .stTabs [data-baseweb="tab"] {
-        color: #3498db;
-        font-weight: 500;
-        background-color: transparent;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
+        color: #0369a1;
+        font-weight: 600;
+        background-color: rgba(2, 132, 199, 0.08);
+        border-radius: 10px;
+        padding: 0.5rem 1.25rem;
+        font-size: 14px;
+        margin: 0 4px;
     }
     
     .stTabs [data-baseweb="tab"]:hover {
-        background-color: rgba(52, 152, 219, 0.1);
+        background-color: rgba(2, 132, 199, 0.15);
+        color: #0284c7;
     }
     
     .stTabs [data-baseweb="tab"][aria-selected="true"] {
-        background-color: #3498db;
+        background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
         color: white;
+        box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
     }
     
     /* 卡片样式 */
     .stMetric {
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 12px;
-        padding: 1rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(2, 132, 199, 0.1);
     }
     
     /* 按钮样式 */
     .stButton > button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
         color: white;
         border: none;
-        border-radius: 8px;
-        padding: 0.5rem 1.5rem;
-        font-weight: 500;
+        border-radius: 12px;
+        padding: 0.6rem 1.75rem;
+        font-weight: 600;
+        font-size: 14px;
         transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35);
     }
     
     .stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 8px 22px rgba(2, 132, 199, 0.45);
     }
     
-    /* 侧边栏样式 - 柔和浅蓝 */
-    .css-1d391kg {
-        background: #f0f6fc;
-        border-radius: 0 12px 12px 0;
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+    /* 侧边栏样式 */
+    body .stSidebar, body .css-1d391kg, body .css-1lcbmhc, body .css-1n76uvr, body .css-1cypj4w,
+    body [data-testid="stSidebar"], body [data-testid="stSidebar"] > div:first-child,
+    body [data-testid="stSidebarNav"] { 
+      background: #f0f0f0 !important; 
+      background-color: #f0f0f0 !important;
+      border-radius: 0 16px 16px 0; 
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255,255,255,0.8);
+      border-left: 3px solid #0284c7;
+    }
+    
+    /* 侧边栏文字颜色 */
+    .stSidebar h2, .stSidebar h3, .stSidebar label,
+    .css-1d391kg h2, .css-1d391kg h3, .css-1d391kg label,
+    .css-1lcbmhc h2, .css-1lcbmhc h3, .css-1lcbmhc label,
+    .css-1n76uvr h2, .css-1n76uvr h3, .css-1n76uvr label {
+      color: #1e3a5f !important;
+    }
+    
+    .stSidebar p, .stSidebar div,
+    .css-1d391kg p, .css-1d391kg div,
+    .css-1lcbmhc p, .css-1lcbmhc div,
+    .css-1n76uvr p, .css-1n76uvr div {
+      color: #334155 !important;
     }
     
     /* 表单输入样式 */
@@ -89,16 +124,106 @@ st.markdown("""
     .stSelectbox > div > div > select,
     .stNumberInput > div > div > input,
     .stTextArea > div > div > textarea {
-        border-radius: 8px;
-        border: 1px solid #e0e0e0;
-        padding: 0.5rem;
+        border-radius: 10px;
+        border: 2px solid #bae6fd;
+        padding: 0.75rem;
+        background-color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        color: #1e3a5f;
+        transition: all 0.3s ease;
+    }
+    
+    .stTextInput > div > div > input:focus,
+    .stSelectbox > div > div > select:focus,
+    .stNumberInput > div > div > input:focus,
+    .stTextArea > div > div > textarea:focus {
+        border-color: #0284c7;
+        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        outline: none;
     }
     
     /* 数据表格样式 */
     .stDataFrame {
-        border-radius: 12px;
+        border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(2, 132, 199, 0.1);
+    }
+    
+    /* 滑块样式 */
+    .stSlider > div > div > div {
+        color: #0284c7;
+    }
+    
+    /* 警告/错误提示样式 */
+    .stAlert {
+        border-radius: 12px;
+        padding: 1rem;
+        font-size: 14px;
+    }
+    
+    .stWarning {
+        background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+        border-left: 4px solid #eab308;
+        color: #854d0e;
+    }
+    
+    .stError {
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        border-left: 4px solid #ef4444;
+        color: #991b1b;
+    }
+    
+    .stSuccess {
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        border-left: 4px solid #22c55e;
+        color: #166534;
+    }
+    
+    /* 侧边栏分隔线 */
+    hr {
+        border: none;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #7dd3fc, #0284c7, #7dd3fc, transparent);
+        margin: 1rem 0;
+    }
+    
+    /* 复选框和单选框 */
+    .stCheckbox label, .stRadio label {
+        color: #1e3a5f;
+        font-size: 14px;
+    }
+    
+    /* 下拉选择框 */
+    .stMultiSelect label {
+        color: #1e3a5f;
+    }
+    
+    /* 代码块样式 */
+    .stCodeBlock {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border-radius: 12px;
+        padding: 1rem;
+    }
+    
+    /* 进度条 */
+    .stProgress > div > div {
+        background: linear-gradient(90deg, #0284c7 0%, #06b6d4 100%);
+        border-radius: 8px;
+    }
+    
+    /* 文件上传 */
+    .stFileUploader > div > div {
+        border: 2px dashed #7dd3fc;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(2, 132, 199, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
+    }
+    
+    /* 日期选择器 */
+    .stDateInput > div > div > input {
+        border-radius: 10px;
+        border: 2px solid #bae6fd;
+        padding: 0.75rem;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -180,6 +305,8 @@ if "show_settings" not in st.session_state:
     st.session_state.show_settings = False
 if "is_admin" not in st.session_state:
     st.session_state.is_admin = False
+if "model" not in st.session_state:
+    st.session_state.model = "deepseek-chat"
 
 # ==================== 加载数据 ====================
 @st.cache_data
@@ -623,14 +750,13 @@ with tab_sell:
     raw_desc_input = st.text_input("原始描述（复制上面的描述或直接输入）", value=description)
     if st.button("✨ AI润色描述"):
         client = get_ai_client()
-        if client and raw_desc_input.strip() and item_name:
+        if client and raw_desc_input.strip():
             with st.spinner("润色中..."):
                 prompt = POLISH_PROMPT.format(
                     raw_text=raw_desc_input,
-                    name=item_name,
-                    cate=category,
-                    cond=condition
-                )
+                    name=item_name if item_name else "商品",
+                    cate=category if category else "未分类",
+                    cond=condition if condition else "未说明")
                 try:
                     res = client.chat.completions.create(
                         model=st.session_state.model,
