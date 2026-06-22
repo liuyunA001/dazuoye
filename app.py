@@ -3,7 +3,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import os
+from dotenv import load_dotenv
 from openai import OpenAI
+
+# 加载 .env 文件中的环境变量
+load_dotenv()
 
 # -------------------- 字体配置（解决中文显示方块问题） --------------------
 def setup_chinese_font():
@@ -143,18 +147,50 @@ if "quick_filter_category" not in st.session_state:
 def load_data():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     data_path = os.path.join(script_dir, "data", "items.csv")
+    
+    if not os.path.exists(data_path):
+        st.error(f"数据文件未找到：{data_path}")
+        st.info("请确保 data/items.csv 文件存在于正确的位置")
+        
+        sample_data = pd.DataFrame({
+            'id': [1, 2, 3],
+            'name': ['高等数学教材', '台灯', '充电宝'],
+            'category': ['教材', '电器', '数码'],
+            'price': [35.0, 45.0, 68.0],
+            'condition': ['八成新', '九成新', '九成新'],
+            'college': ['计算机学院', '材料学院', '自动化学院'],
+            'seller_grade': ['大三', '大一', '大三'],
+            'sales_count': [12, 18, 14],
+            'post_date': pd.to_datetime(['2024-03-15', '2024-03-16', '2024-03-14']),
+            'description': ['同济大学高等数学教材', 'LED护眼灯', '20000mAh快充'],
+            'contact': ['QQ:123456789', 'QQ:567890123', '微信:powerbank2024']
+        })
+        sample_data['month'] = sample_data['post_date'].dt.month_name()
+        return sample_data
+    
     df = pd.read_csv(data_path)
     df['post_date'] = pd.to_datetime(df['post_date'])
     df['month'] = df['post_date'].dt.month_name()
     return df
 
-df = load_data()
+try:
+    df = load_data()
+except Exception as e:
+    st.error(f"加载数据时发生错误: {str(e)}")
+    st.stop()
 
 # -------------------- AI 客户端 --------------------
 def get_ai_client():
-    api_key = st.session_state.get("api_key", "")
-    base_url = st.session_state.get("base_url", "https://api.deepseek.com/v1")
+    # 优先使用环境变量中的配置（来自 .env 文件），其次使用用户设置
+    api_key = os.getenv("API_KEY") or st.session_state.get("api_key", "")
+    base_url = os.getenv("BASE_URL") or st.session_state.get("base_url", "https://api.deepseek.com/v1")
+    model = os.getenv("MODEL") or st.session_state.get("model", "deepseek-chat")
+    
     if api_key:
+        # 保存到 session_state 供后续使用
+        st.session_state.api_key = api_key
+        st.session_state.base_url = base_url
+        st.session_state.model = model
         return OpenAI(api_key=api_key, base_url=base_url)
     return None
 
